@@ -4,7 +4,6 @@ import dotenv from "dotenv"
 if(process.env.NODE_ENV!=="PRODUCTION"){
     dotenv.config({path:"backend/config.env"})
 };
-import axios from "axios";
 import twilio from "twilio"
 
 const accountsid=process.env.TWILIO_ACCOUNT_SID;
@@ -44,18 +43,42 @@ export const tokencontroller=catchasyncerror(async(req,res,next)=>{
    
 });
 
-let client=new twilio(accountsid,authtoken)
 
-// export const chatcontroller=catchasyncerror(async(req,res,next)=>{
 
-//     console.log("received a webhook", req.body);
-//     if(req.body.EvenType==="onConversationAdded"){
-//         const me="Tackleton";
-//         client.conversations.v1.conversations(req.body.conversationsid).participants.create({
-//             identity:me
-//         }).then(participant=>)
-//     }
+export const smscontroller=catchasyncerror(async(req,res,next)=>{
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    let client=new twilio(accountsid,authtoken)
+// const client = require('twilio')(accountSid, authToken);
+// console.log(client)
 
-// })
+client.verify.v2.services('VA9f4161a15ca65a5ebddd8643c1d17631')
+                .verifications
+                .create({to: '+971558965920', channel: 'sms'})
+                .then(verification => console.log(verification.status));
 
+    res.status(200).json({
+        success:true,
+        message:"sms send successfully",
+    })
+})
+
+
+export const verifysmscontroller=catchasyncerror(async(req,res,next)=>{
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    let client=new twilio(accountsid,authtoken)
+// const client = require('twilio')(accountSid, authToken);
+// console.log(client)
+
+client.verify.v2.services('VA9f4161a15ca65a5ebddd8643c1d17631')
+                .verificationChecks
+                .create({to: '+971558965920', code: "953500"})
+                .then(verification_check => console.log(verification_check.status));
+
+    res.status(200).json({
+        success:true,
+        message:"sms send successfully",
+    })
+})
 
